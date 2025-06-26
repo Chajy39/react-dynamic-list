@@ -15,6 +15,14 @@ const items = [
     title: "테스트333",
     description: "테스트3333입니다.",
   },
+  {
+    title: "테스트44444444",
+    description: "4444444444444444444.",
+  },
+  {
+    title: "테스트555555",
+    description: "테스트55입니다.",
+  },
 ];
 
 function App() {
@@ -34,13 +42,12 @@ function App() {
   };
 
   return (
-    <div style={{ width: "100vw", height: "100vh" }}>
+    <div style={{ width: "50vw", height: "100vh" }}>
       <DynamicList
         items={list}
         renderItem={(item) => <ListItem item={item} />}
         getKey={(item) => item.title}
-        horizontal
-        flexWrap
+        uniformSize
         onDragEnd={(item) => setList(item)}
       />
     </div>

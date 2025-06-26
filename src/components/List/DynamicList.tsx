@@ -8,6 +8,7 @@ export const DynamicList = <T,>({
   getKey,
   horizontal = false,
   flexWrap = false,
+  uniformSize = false,
   onDragStart,
   onDragMove,
   onDragEnd,
@@ -46,6 +47,8 @@ export const DynamicList = <T,>({
                 transition: "transform 0.1s ease",
               }
             : {
+                flex: uniformSize ? 1 : undefined,
+
                 transition: "transform 0.2s ease",
                 cursor: "grab",
               };

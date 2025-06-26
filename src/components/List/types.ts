@@ -4,6 +4,7 @@ export interface DynamicListProps<T> {
   getKey?: (item: T) => string;
   horizontal?: boolean;
   flexWrap?: boolean;
+  uniformSize?: boolean;
   onDragStart?: (list: T[], index: number) => void;
   onDragMove?: (list: T[], index: number) => void;
   onDragEnd?: (list: T[], index: number) => void;
