@@ -9,7 +9,8 @@
     "moduleResolution": "node",
     "strict": true,
     "esModuleInterop": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "types": ["./src/types/global"]
   },
   "include": ["src"],
   "exclude": ["dist", "node_modules", "example"]
