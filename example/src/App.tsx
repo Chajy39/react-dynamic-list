@@ -47,6 +47,7 @@ function App() {
         items={list}
         renderItem={(item) => <ListItem item={item} />}
         getKey={(item) => item.title}
+        horizontal
         uniformSize
         onDragEnd={(item) => setList(item)}
       />

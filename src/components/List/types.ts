@@ -12,6 +12,7 @@ export interface DynamicListProps<T> {
 
 export interface useDynamicListProps<T> {
   initialData: T[];
+  horizontal?: boolean;
   onDragStart?: (list: T[], index: number) => void;
   onDragMove?: (list: T[], index: number) => void;
   onDragEnd?: (list: T[], index: number) => void;

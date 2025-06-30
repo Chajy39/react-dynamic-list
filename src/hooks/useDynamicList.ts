@@ -3,6 +3,7 @@ import { useDynamicListProps } from "../components/List/types";
 
 export const useDynamicList = <T>({
   initialData,
+  horizontal,
   onDragStart,
   onDragMove,
   onDragEnd,
@@ -18,25 +19,43 @@ export const useDynamicList = <T>({
 
   const listRef = useRef<HTMLUListElement>(null);
 
-  const findClosestIndex = (pos: { x: number; y: number }): number => {
+  const findClosestIndex = (position: { x: number; y: number }): number => {
     if (!listRef.current) return 0;
     const children = Array.from(listRef.current.children) as HTMLElement[];
 
-    let minDist = Infinity;
-    let closestIdx = 0;
+    if (children.length === 0) return 0;
 
-    children.forEach((child, idx) => {
-      const rect = child.getBoundingClientRect();
-      const cx = rect.left + rect.width / 2;
-      const cy = rect.top + rect.height / 2;
-      const dist = Math.hypot(pos.x - cx, pos.y - cy);
-      if (dist < minDist) {
-        minDist = dist;
-        closestIdx = idx;
+    // 리스트를 벗어나면 맨 앞 또는 맨 뒤로 이동
+    const firstRect = children[0].getBoundingClientRect();
+    const lastRect = children[children.length - 1].getBoundingClientRect();
+
+    if (horizontal) {
+      if (position.x < firstRect.left) return 0;
+      if (position.x > lastRect.right) return children.length - 1;
+    } else {
+      if (position.y < firstRect.top) return 0;
+      if (position.y > lastRect.bottom) return children.length - 1;
+    }
+
+    // 거리 설정
+
+    for (let i = 0; i < children.length; i++) {
+      const rect = children[i].getBoundingClientRect();
+      if (horizontal) {
+        const cx = rect.left + rect.width / 2;
+
+        if (position.x < cx) {
+          return i;
+        }
+      } else {
+        const cy = rect.top + rect.height / 2;
+
+        if (position.y < cy) {
+          return i;
+        }
       }
-    });
-
-    return closestIdx;
+    }
+    return children.length - 1;
   };
 
   const itemDrag = (e: MouseEvent | React.MouseEvent, index: number) => {

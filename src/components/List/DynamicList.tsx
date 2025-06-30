@@ -1,5 +1,6 @@
 import { useDynamicList } from "../../hooks/useDynamicList";
 import { DynamicListProps } from "./types";
+import "./style.css";
 
 export const DynamicList = <T,>({
   items,
@@ -14,6 +15,7 @@ export const DynamicList = <T,>({
 }: DynamicListProps<T>) => {
   const hook = useDynamicList({
     initialData: items,
+    horizontal,
     onDragStart,
     onDragMove,
     onDragEnd,
@@ -24,14 +26,10 @@ export const DynamicList = <T,>({
       ref={hook.listRef}
       onMouseMove={hook.itemMove}
       onMouseUp={hook.itemDrop}
+      className="react-dynamic-list-container"
       style={{
-        listStyle: "none",
-        display: "flex",
-        padding: 0,
-        margin: 0,
         flexWrap: flexWrap ? "wrap" : undefined,
         flexDirection: horizontal ? "row" : "column",
-        position: "relative",
       }}
     >
       {hook.list.map((item, index) => {
@@ -39,32 +37,24 @@ export const DynamicList = <T,>({
         const style =
           isDragging && hook.position
             ? {
-                position: "fixed" as const,
                 left: hook.position.x - hook.dragOffset.x,
                 top: hook.position.y - hook.dragOffset.y,
                 width: hook.dragItemSize.width,
                 height: hook.dragItemSize.height,
-                PointerEvent: "none",
-                zIndex: 1000,
-                transform: "scale(1.05)",
-                transition: "transform 0.1s ease",
-                backgroundColor: "red",
-                cursor: "grab",
+                backgroundColor: "grey",
               }
             : {
                 flex: uniformSize ? 1 : undefined,
-                transition: "transform 0.2s ease",
-                cursor: "grab",
               };
 
         return (
           <li
             key={getKey?.(item) || index}
             onMouseDown={(e) => hook.itemDrag(e, index)}
-            style={{
-              ...style,
-              flex: uniformSize ? 1 : undefined,
-            }}
+            className={`react-dynamic-list-item ${
+              isDragging && hook.position ? "grabbed" : "not-grabbed"
+            }`}
+            style={style}
           >
             {renderItem(item)}
           </li>

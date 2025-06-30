@@ -1,0 +1,24 @@
+.react-dynamic-list-container {
+  position: relative;
+  display: flex;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.react-dynamic-list-item {
+  word-break: break-all;
+  cursor: grab;
+}
+
+.grabbed {
+  position: fixed;
+  pointer-events: none;
+  z-index: 1000;
+  transform: scale(1.05);
+  transition: transform 0.1s ease;
+}
+
+.not-grabbed {
+  transition: transform 0.2s ease;
+}
