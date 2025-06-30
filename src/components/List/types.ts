@@ -5,14 +5,18 @@ export interface DynamicListProps<T> {
   horizontal?: boolean;
   flexWrap?: boolean;
   uniformSize?: boolean;
+  hideDraggedItem?: boolean;
   onDragStart?: (list: T[], index: number) => void;
   onDragMove?: (list: T[], index: number) => void;
   onDragEnd?: (list: T[], index: number) => void;
+  containerStyle?: React.CSSProperties;
+  itemStyle?: React.CSSProperties;
 }
 
 export interface useDynamicListProps<T> {
   initialData: T[];
   horizontal?: boolean;
+  hideDraggedItem?: boolean;
   onDragStart?: (list: T[], index: number) => void;
   onDragMove?: (list: T[], index: number) => void;
   onDragEnd?: (list: T[], index: number) => void;

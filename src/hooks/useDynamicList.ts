@@ -4,6 +4,7 @@ import { useDynamicListProps } from "../components/List/types";
 export const useDynamicList = <T>({
   initialData,
   horizontal,
+  hideDraggedItem,
   onDragStart,
   onDragMove,
   onDragEnd,
@@ -39,23 +40,30 @@ export const useDynamicList = <T>({
 
     // 거리 설정
 
+    let closestIndex = 0;
+    let minDist = Infinity;
+
     for (let i = 0; i < children.length; i++) {
       const rect = children[i].getBoundingClientRect();
-      if (horizontal) {
-        const cx = rect.left + rect.width / 2;
+      console.log("position", horizontal, rect.right, rect.bottom, position);
 
-        if (position.x < cx) {
-          return i;
-        }
-      } else {
-        const cy = rect.top + rect.height / 2;
+      for (let i = 0; i < children.length; i++) {
+        const rect = children[i].getBoundingClientRect();
 
-        if (position.y < cy) {
-          return i;
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+
+        const dist = horizontal
+          ? Math.abs(position.x - centerX)
+          : Math.abs(position.y - centerY);
+
+        if (dist < minDist) {
+          minDist = dist;
+          closestIndex = i;
         }
       }
     }
-    return children.length - 1;
+    return closestIndex;
   };
 
   const itemDrag = (e: MouseEvent | React.MouseEvent, index: number) => {

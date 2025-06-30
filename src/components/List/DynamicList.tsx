@@ -9,13 +9,17 @@ export const DynamicList = <T,>({
   horizontal = false,
   flexWrap = false,
   uniformSize = false,
+  hideDraggedItem = false,
   onDragStart,
   onDragMove,
   onDragEnd,
+  containerStyle,
+  itemStyle,
 }: DynamicListProps<T>) => {
   const hook = useDynamicList({
     initialData: items,
     horizontal,
+    hideDraggedItem,
     onDragStart,
     onDragMove,
     onDragEnd,
@@ -30,6 +34,7 @@ export const DynamicList = <T,>({
       style={{
         flexWrap: flexWrap ? "wrap" : undefined,
         flexDirection: horizontal ? "row" : "column",
+        ...containerStyle,
       }}
     >
       {hook.list.map((item, index) => {
@@ -54,7 +59,7 @@ export const DynamicList = <T,>({
             className={`react-dynamic-list-item ${
               isDragging && hook.position ? "grabbed" : "not-grabbed"
             }`}
-            style={style}
+            style={{ ...style, ...itemStyle }}
           >
             {renderItem(item)}
           </li>

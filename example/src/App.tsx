@@ -42,7 +42,7 @@ function App() {
   };
 
   return (
-    <div style={{ width: "50vw", height: "100vh" }}>
+    <div style={{ width: "100vw", height: "100vh" }}>
       <DynamicList
         items={list}
         renderItem={(item) => <ListItem item={item} />}
@@ -50,6 +50,7 @@ function App() {
         horizontal
         uniformSize
         onDragEnd={(item) => setList(item)}
+        containerStyle={{ width: "70%", gap: "5vw" }}
       />
     </div>
   );
