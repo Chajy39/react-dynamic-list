@@ -9,7 +9,7 @@ export const DynamicList = <T,>({
   horizontal = false,
   flexWrap = false,
   uniformSize = false,
-  hideDraggedItem = false,
+  staticMove = false,
   onDragStart,
   onDragMove,
   onDragEnd,
@@ -19,7 +19,8 @@ export const DynamicList = <T,>({
   const hook = useDynamicList({
     initialData: items,
     horizontal,
-    hideDraggedItem,
+    flexWrap,
+    staticMove,
     onDragStart,
     onDragMove,
     onDragEnd,

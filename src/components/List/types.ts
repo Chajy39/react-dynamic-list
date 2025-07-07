@@ -5,7 +5,7 @@ export interface DynamicListProps<T> {
   horizontal?: boolean;
   flexWrap?: boolean;
   uniformSize?: boolean;
-  hideDraggedItem?: boolean;
+  staticMove?: boolean;
   onDragStart?: (list: T[], index: number) => void;
   onDragMove?: (list: T[], index: number) => void;
   onDragEnd?: (list: T[], index: number) => void;
@@ -16,7 +16,8 @@ export interface DynamicListProps<T> {
 export interface useDynamicListProps<T> {
   initialData: T[];
   horizontal?: boolean;
-  hideDraggedItem?: boolean;
+  flexWrap?: boolean;
+  staticMove?: boolean;
   onDragStart?: (list: T[], index: number) => void;
   onDragMove?: (list: T[], index: number) => void;
   onDragEnd?: (list: T[], index: number) => void;
