@@ -5,7 +5,7 @@ export const useDynamicList = <T>({
   initialData,
   horizontal,
   flexWrap,
-  staticMove,
+  // staticMove,
   onDragStart,
   onDragMove,
   onDragEnd,
@@ -33,7 +33,7 @@ export const useDynamicList = <T>({
 
     if (flexWrap) {
       children.forEach((child, index) => {
-        if (staticMove && index === draggingItemIndex) return;
+        // if (staticMove && index === draggingItemIndex) return;
 
         const rect = child.getBoundingClientRect();
         const centerX = rect.left + rect.width / 2;
@@ -81,7 +81,6 @@ export const useDynamicList = <T>({
 
   const itemDrag = (e: MouseEvent | React.MouseEvent, index: number) => {
     e.preventDefault();
-    const target = e.currentTarget as HTMLElement;
     const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
     setDragOffset({
       x: e.clientX - rect.left,
@@ -102,23 +101,21 @@ export const useDynamicList = <T>({
 
     const newPosition = { x: e.clientX, y: e.clientY };
     setPosition(newPosition);
-
-    const fromIndex = list.findIndex((item) => item === draggingItemData);
     const toIndex = findClosestIndex(newPosition);
 
     if (toIndex === -1) return;
 
-    if (staticMove) {
-      setDropTargetIndex(toIndex);
-    } else {
-      const fromIndex = list.findIndex((item) => item === draggingItemData);
-      if (fromIndex !== -1 && toIndex !== fromIndex) {
-        const updated = [...list];
-        const [moved] = updated.splice(fromIndex, 1);
-        updated.splice(toIndex, 0, moved);
-        setList(updated);
-      }
+    // if (staticMove) {
+    //   setDropTargetIndex(toIndex);
+    // } else {
+    const fromIndex = list.findIndex((item) => item === draggingItemData);
+    if (fromIndex !== -1 && toIndex !== fromIndex) {
+      const updated = [...list];
+      const [moved] = updated.splice(fromIndex, 1);
+      updated.splice(toIndex, 0, moved);
+      setList(updated);
     }
+    // }
 
     onDragMove?.(list, draggingItemIndex!);
   };
@@ -126,20 +123,20 @@ export const useDynamicList = <T>({
   const itemDrop = () => {
     if (draggingItemIndex === null) return;
 
-    if (staticMove) {
-      if (dropTargetIndex !== null && dropTargetIndex !== draggingItemIndex) {
-        const updatedList = [...list];
-        const [movedItem] = updatedList.splice(draggingItemIndex, 1);
-        updatedList.splice(dropTargetIndex, 0, movedItem);
-        setList(updatedList);
-        onDragEnd?.(updatedList, draggingItemIndex);
-      } else {
-        onDragEnd?.(list, draggingItemIndex);
-      }
-    } else {
-      const finalIndex = list.findIndex((item) => item === draggingItemData);
-      onDragEnd?.(list, draggingItemIndex);
-    }
+    // if (staticMove) {
+    //   if (dropTargetIndex !== null && dropTargetIndex !== draggingItemIndex) {
+    //     const updatedList = [...list];
+    //     const [movedItem] = updatedList.splice(draggingItemIndex, 1);
+    //     updatedList.splice(dropTargetIndex, 0, movedItem);
+    //     setList(updatedList);
+    //     onDragEnd?.(updatedList, draggingItemIndex);
+    //   } else {
+    //     onDragEnd?.(list, draggingItemIndex);
+    //   }
+    // } else {
+    const finalIndex = list.findIndex((item) => item === draggingItemData);
+    onDragEnd?.(list, draggingItemIndex);
+    // }
 
     setDraggingItemIndex(null);
     setDraggingItemData(null);
@@ -155,7 +152,12 @@ export const useDynamicList = <T>({
     }
 
     return () => window.removeEventListener("mouseup", itemDrop);
-  }, [draggingItemIndex, draggingItemData, dropTargetIndex, list, staticMove]);
+  }, [
+    draggingItemIndex,
+    draggingItemData,
+    dropTargetIndex,
+    list /*staticMove*/,
+  ]);
 
   return {
     list,
@@ -165,7 +167,7 @@ export const useDynamicList = <T>({
     position,
     dragOffset,
     dragItemSize,
-    dropTargetIndex: staticMove ? dropTargetIndex : null,
+    dropTargetIndex: /*staticMove ? dropTargetIndex :*/ null,
     itemDrag,
     itemMove,
     itemDrop,

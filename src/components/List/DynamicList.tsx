@@ -9,7 +9,7 @@ export const DynamicList = <T,>({
   horizontal = false,
   flexWrap = false,
   uniformSize = false,
-  staticMove = false,
+  // staticMove = false,
   onDragStart,
   onDragMove,
   onDragEnd,
@@ -20,7 +20,7 @@ export const DynamicList = <T,>({
     initialData: items,
     horizontal,
     flexWrap,
-    staticMove,
+    // staticMove,
     onDragStart,
     onDragMove,
     onDragEnd,
@@ -30,7 +30,6 @@ export const DynamicList = <T,>({
     <ul
       ref={hook.listRef}
       onMouseMove={hook.itemMove}
-      onMouseUp={hook.itemDrop}
       className="react-dynamic-list-container"
       style={{
         flexWrap: flexWrap ? "wrap" : undefined,
