@@ -33,6 +33,11 @@ export const DynamicList = <T,>({
       style={{
         flexWrap: flexWrap ? "wrap" : undefined,
         flexDirection: horizontal ? "row" : "column",
+        position: "relative",
+        display: "flex",
+        listStyle: "none",
+        padding: "0",
+        margin: "0",
         ...containerStyle,
       }}
     >
@@ -50,6 +55,7 @@ export const DynamicList = <T,>({
               }
             : {
                 flex: uniformSize ? 1 : undefined,
+                transition: "transform 0.2s ease",
               };
 
         const isDropTarget = staticMove && index === hook.dropTargetIndex;
