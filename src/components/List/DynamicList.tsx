@@ -37,7 +37,8 @@ export const DynamicList = <T,>({
       }}
     >
       {hook.list.map((item, index) => {
-        const isDragging = item === hook.draggingItemData;
+        const isDragging = !staticMove && item === hook.draggingItemData;
+
         const style =
           isDragging && hook.position
             ? {
@@ -45,26 +46,40 @@ export const DynamicList = <T,>({
                 top: hook.position.y - hook.dragOffset.y,
                 width: hook.dragItemSize.width,
                 height: hook.dragItemSize.height,
-                backgroundColor: "white",
-                boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
               }
             : {
                 flex: uniformSize ? 1 : undefined,
               };
+
+        const isDropTarget = staticMove && index === hook.dropTargetIndex;
 
         return (
           <li
             key={getKey?.(item) || index}
             onMouseDown={(e) => hook.itemDrag(e, index)}
             className={`dynamic-list-item ${
-              isDragging && hook.position ? "grabbed" : "not-grabbed"
-            }`}
+              isDragging ? "grabbed" : "not-grabbed"
+            } ${isDropTarget ? "drop-target" : ""}`}
             style={{ ...style, ...itemStyle }}
           >
             {renderItem(item)}
           </li>
         );
       })}
+
+      {hook.draggingItemData && staticMove && hook.position && (
+        <li
+          className="dynamic-list-item grabbed"
+          style={{
+            left: hook.position.x - hook.dragOffset.x,
+            top: hook.position.y - hook.dragOffset.y,
+            width: hook.dragItemSize.width,
+            height: hook.dragItemSize.height,
+          }}
+        >
+          {renderItem(hook.draggingItemData)}
+        </li>
+      )}
     </ul>
   );
 };
