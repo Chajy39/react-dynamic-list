@@ -1,3 +1,5 @@
+import { ReactNode } from "react";
+
 export interface DynamicListProps<T> {
   items: T[];
   renderItem: (item: T) => React.ReactNode;
@@ -9,8 +11,10 @@ export interface DynamicListProps<T> {
   onDragStart?: (list: T[], index: number) => void;
   onDragMove?: (list: T[], index: number) => void;
   onDragEnd?: (list: T[], index: number) => void;
+  // customTargetItem?: (item: T) => React.ReactNode;
   containerStyle?: React.CSSProperties;
   itemStyle?: React.CSSProperties;
+  targetItemStyle?: React.CSSProperties;
 }
 
 export interface useDynamicListProps<T> {

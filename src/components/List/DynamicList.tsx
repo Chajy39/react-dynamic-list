@@ -15,6 +15,7 @@ export const DynamicList = <T,>({
   onDragEnd,
   containerStyle,
   itemStyle,
+  targetItemStyle,
 }: DynamicListProps<T>) => {
   const hook = useDynamicList({
     initialData: items,
@@ -46,6 +47,7 @@ export const DynamicList = <T,>({
                 top: hook.position.y - hook.dragOffset.y,
                 width: hook.dragItemSize.width,
                 height: hook.dragItemSize.height,
+                ...targetItemStyle,
               }
             : {
                 flex: uniformSize ? 1 : undefined,
@@ -75,6 +77,7 @@ export const DynamicList = <T,>({
             top: hook.position.y - hook.dragOffset.y,
             width: hook.dragItemSize.width,
             height: hook.dragItemSize.height,
+            ...targetItemStyle,
           }}
         >
           {renderItem(hook.draggingItemData)}
