@@ -96,7 +96,7 @@ export const useDynamicList = <T>({
     onDragStart?.(list, index);
   };
 
-  const itemMove = (e: MouseEvent | React.MouseEvent) => {
+  const itemMove = (e: any) => {
     if (!draggingItemData) return;
 
     const newPosition = { x: e.clientX, y: e.clientY };
@@ -146,12 +146,16 @@ export const useDynamicList = <T>({
 
   useEffect(() => {
     if (draggingItemData) {
+      window.addEventListener("mousemove", itemMove);
       window.addEventListener("mouseup", itemDrop, {
         once: true,
       });
     }
 
-    return () => window.removeEventListener("mouseup", itemDrop);
+    return () => {
+      window.removeEventListener("mousemove", itemMove);
+      window.removeEventListener("mouseup", itemDrop);
+    };
   }, [
     draggingItemIndex,
     draggingItemData,

@@ -9,7 +9,7 @@ export const DynamicList = <T,>({
   horizontal = false,
   flexWrap = false,
   uniformSize = false,
-  // staticMove = false,
+  staticMove = false,
   onDragStart,
   onDragMove,
   onDragEnd,
@@ -20,7 +20,7 @@ export const DynamicList = <T,>({
     initialData: items,
     horizontal,
     flexWrap,
-    // staticMove,
+    staticMove,
     onDragStart,
     onDragMove,
     onDragEnd,
@@ -29,8 +29,7 @@ export const DynamicList = <T,>({
   return (
     <ul
       ref={hook.listRef}
-      onMouseMove={hook.itemMove}
-      className="react-dynamic-list-container"
+      className="dynamic-list-container"
       style={{
         flexWrap: flexWrap ? "wrap" : undefined,
         flexDirection: horizontal ? "row" : "column",
@@ -46,7 +45,8 @@ export const DynamicList = <T,>({
                 top: hook.position.y - hook.dragOffset.y,
                 width: hook.dragItemSize.width,
                 height: hook.dragItemSize.height,
-                backgroundColor: "grey",
+                backgroundColor: "white",
+                boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
               }
             : {
                 flex: uniformSize ? 1 : undefined,
@@ -56,7 +56,7 @@ export const DynamicList = <T,>({
           <li
             key={getKey?.(item) || index}
             onMouseDown={(e) => hook.itemDrag(e, index)}
-            className={`react-dynamic-list-item ${
+            className={`dynamic-list-item ${
               isDragging && hook.position ? "grabbed" : "not-grabbed"
             }`}
             style={{ ...style, ...itemStyle }}
