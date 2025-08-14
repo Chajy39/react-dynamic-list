@@ -1,6 +1,5 @@
 import { useDynamicList } from "../../hooks/useDynamicList";
 import { DynamicListProps } from "./types";
-import "./style.css";
 
 export const DynamicList = <T,>({
   items,

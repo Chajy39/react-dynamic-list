@@ -13,10 +13,11 @@ export default defineConfig({
     }),
   ],
   build: {
+    cssCodeSplit: false,
     lib: {
       entry: path.resolve(__dirname, "src/index.ts"),
-      name: "ReactDynamicList",
-      fileName: (format) => `react-dynamic-list.${format}.js`,
+      name: "@realzero_cha/dynamicList",
+      fileName: (format) => `@realzero_cha/dynamic-list.${format}.js`,
     },
     rollupOptions: {
       external: ["react", "react-dom"],
