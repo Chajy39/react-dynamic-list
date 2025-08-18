@@ -1,3 +1,4 @@
+import { CSSProperties } from "react";
 import { useDynamicList } from "../../hooks/useDynamicList";
 import { DynamicListProps } from "./types";
 
@@ -44,19 +45,32 @@ export const DynamicList = <T,>({
       {hook.list.map((item, index) => {
         const isDragging = !staticMove && item === hook.draggingItemData;
 
-        const style =
+        const style: CSSProperties =
           isDragging && hook.position
             ? {
-                left: hook.position.x - hook.dragOffset.x,
-                top: hook.position.y - hook.dragOffset.y,
-                width: hook.dragItemSize.width,
-                height: hook.dragItemSize.height,
+                left: `${hook.position.x - hook.dragOffset.x}px`,
+                top: `${hook.position.y - hook.dragOffset.y}px`,
+                width: `${hook.dragItemSize.width}px`,
+                height: `${hook.dragItemSize.height}px`,
                 ...targetItemStyle,
               }
             : {
                 flex: uniformSize ? 1 : undefined,
                 transition: "transform 0.2s ease",
+                cursor: "grab",
               };
+        const draggingStyle: CSSProperties = {
+          position: "fixed",
+          pointerEvents: "none",
+          background: "#fff",
+          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
+          zIndex: 1000,
+          transform: "scale(1.05)",
+          wordBreak: "break-all",
+        };
+        const notDraggingStyle: CSSProperties = {
+          wordBreak: "break-all",
+        };
 
         const isDropTarget = staticMove && index === hook.dropTargetIndex;
 
@@ -67,7 +81,11 @@ export const DynamicList = <T,>({
             className={`dynamic-list-item ${
               isDragging ? "grabbed" : "not-grabbed"
             } ${isDropTarget ? "drop-target" : ""}`}
-            style={{ ...style, ...itemStyle }}
+            style={{
+              ...style,
+              ...itemStyle,
+              ...(isDragging ? draggingStyle : notDraggingStyle),
+            }}
           >
             {renderItem(item)}
           </li>
@@ -78,10 +96,10 @@ export const DynamicList = <T,>({
         <li
           className="dynamic-list-item grabbed"
           style={{
-            left: hook.position.x - hook.dragOffset.x,
-            top: hook.position.y - hook.dragOffset.y,
-            width: hook.dragItemSize.width,
-            height: hook.dragItemSize.height,
+            left: `${hook.position.x - hook.dragOffset.x}px`,
+            top: `${hook.position.y - hook.dragOffset.y}px`,
+            width: `${hook.dragItemSize.width}px`,
+            height: `${hook.dragItemSize.height}px`,
             ...targetItemStyle,
           }}
         >

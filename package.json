@@ -4,6 +4,17 @@
   "main": "dist/@realzero_cha/dynamic-list.umd.js",
   "module": "dist/@realzero_cha/dynamic-list.es.js",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/@realzero_cha/dynamic-list.es.js",
+      "require": "./dist/@realzero_cha/dynamic-list.umd.js"
+    },
+    "./dist/styles.css": "./dist/dynamic-list.css"
+  },
+  "files": [
+    "dist"
+  ],
   "peerDependencies": {
     "react": "^18 || ^19",
     "react-dom": "^18 || ^19"
