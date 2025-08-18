@@ -23,6 +23,26 @@ const items = [
     title: "테스트555555",
     description: "테스트55입니다.",
   },
+  {
+    title: "테스트6",
+    description: "테스트6입니다.",
+  },
+  {
+    title: "테스트777777",
+    description: "테스트777입니다.",
+  },
+  {
+    title: "테스트888",
+    description: "테스8888입니다.",
+  },
+  {
+    title: "테스트999999",
+    description: "9999999999999999.",
+  },
+  {
+    title: "테스트10100101001010",
+    description: "테스트101001010101010010101010100입니다.",
+  },
 ];
 
 function App() {
@@ -42,13 +62,14 @@ function App() {
   };
 
   return (
-    <div style={{ width: "60vw", height: "100vh" }}>
+    <div style={{ width: "70vw", height: "100vh" }}>
       <DynamicList
         items={list}
         renderItem={(item) => <ListItem item={item} />}
         getKey={(item) => item.title}
-        horizontal
-        uniformSize
+        type={"grid"}
+        cols={4}
+        staticMove
         onDragEnd={(item) => setList(item)}
         containerStyle={{ width: "70%", gap: "3vw" }}
       />

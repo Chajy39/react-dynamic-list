@@ -1,12 +1,22 @@
-import { ReactNode } from "react";
+export type ListGridProps = {
+  type: "grid";
+  cols?: number;
+  // colsSubgrid?: boolean;
+  rows?: number;
+  // rowsSubgrid?: boolean;
+};
 
-export interface DynamicListProps<T> {
-  items: T[];
-  renderItem: (item: T) => React.ReactNode;
-  getKey?: (item: T) => string;
+export type ListFlexProps = {
+  type: "flex";
   horizontal?: boolean;
   flexWrap?: boolean;
   uniformSize?: boolean;
+};
+
+export type ListBasicProps<T> = {
+  items: T[];
+  renderItem: (item: T) => React.ReactNode;
+  getKey?: (item: T) => string;
   staticMove?: boolean;
   onDragStart?: (list: T[], index: number) => void;
   onDragMove?: (list: T[], index: number) => void;
@@ -15,9 +25,13 @@ export interface DynamicListProps<T> {
   containerStyle?: React.CSSProperties;
   itemStyle?: React.CSSProperties;
   targetItemStyle?: React.CSSProperties;
-}
+};
 
-export interface useDynamicListProps<T> {
+export type DynamicListProps<T> =
+  | (ListGridProps & ListBasicProps<T>)
+  | (ListFlexProps & ListBasicProps<T>);
+
+export type useDynamicListProps<T> = {
   initialData: T[];
   horizontal?: boolean;
   flexWrap?: boolean;
@@ -25,4 +39,4 @@ export interface useDynamicListProps<T> {
   onDragStart?: (list: T[], index: number) => void;
   onDragMove?: (list: T[], index: number) => void;
   onDragEnd?: (list: T[], index: number) => void;
-}
+};
