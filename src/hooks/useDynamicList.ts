@@ -3,6 +3,76 @@ import { useDynamicListProps } from "../components/List/types";
 
 type PositionType = { x: number; y: number };
 
+const findClosestIndex = <T>({
+  position,
+  rects,
+  horizontal,
+  flexWrap,
+}: {
+  position: PositionType;
+  rects: DOMRect[];
+  horizontal?: boolean;
+  flexWrap?: boolean;
+}): number => {
+  if (rects.length === 0) return -1;
+
+  let closestIndex = -1;
+  let minDistance = Infinity;
+
+  const gridRect = rects.reduce(
+    (acc, rect) => {
+      acc.top = Math.min(acc.top, rect.top);
+      acc.left = Math.min(acc.left, rect.left);
+      acc.right = Math.max(acc.right, rect.right);
+      acc.bottom = Math.max(acc.bottom, rect.bottom);
+      return acc;
+    },
+    {
+      top: Infinity,
+      left: Infinity,
+      right: -Infinity,
+      bottom: -Infinity,
+    }
+  );
+
+  rects.forEach((rect, index) => {
+    let distance: number;
+
+    if (flexWrap) {
+      if (
+        position.x >= gridRect.left &&
+        position.x <= gridRect.right &&
+        position.y >= gridRect.top &&
+        position.y <= gridRect.bottom
+      ) {
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        distance = Math.sqrt(
+          Math.pow(position.x - centerX, 2) + Math.pow(position.y - centerY, 2)
+        );
+      } else {
+        const dx = Math.max(rect.left - position.x, 0, position.x - rect.right);
+        const dy = Math.max(rect.top - position.y, 0, position.y - rect.bottom);
+        distance = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
+      }
+    } else {
+      const center = horizontal
+        ? rect.left + rect.width / 2
+        : rect.top + rect.height / 2;
+      distance = horizontal
+        ? Math.abs(position.x - center)
+        : Math.abs(position.y - center);
+    }
+
+    if (distance < minDistance) {
+      minDistance = distance;
+      closestIndex = index;
+    }
+  });
+
+  return closestIndex;
+};
+
 export const useDynamicList = <T>({
   initialData,
   horizontal,
@@ -25,76 +95,6 @@ export const useDynamicList = <T>({
   const initialListRef = useRef(initialData);
   const listRef = useRef<HTMLUListElement>(null);
 
-  // 커서 위치에서 가장 가까운 아이템 index 찾기
-  const findClosestIndex = (
-    position: PositionType,
-    rects: DOMRect[]
-  ): number => {
-    if (rects.length === 0) return -1;
-
-    if (staticMove) {
-      const isHorizontal = horizontal;
-      const key = isHorizontal ? "x" : "y";
-      const startProp = isHorizontal ? "left" : "top";
-      const endProp = isHorizontal ? "right" : "bottom";
-
-      if (position[key] <= rects[0][startProp]) return 0;
-
-      if (position[key] >= rects[rects.length - 1][endProp])
-        return rects.length - 1;
-
-      for (let i = 0; i < rects.length; i++) {
-        const rect = rects[i];
-        const rectEnd = rect[endProp];
-
-        if (i < rects.length - 1) {
-          const nextRect = rects[i + 1];
-          const nextRectStart = nextRect[startProp];
-          const gapMidpoint = (rectEnd + nextRectStart) / 2;
-
-          if (position[key] >= rectEnd && position[key] <= gapMidpoint) {
-            return i;
-          }
-
-          if (position[key] > gapMidpoint && position[key] < nextRectStart) {
-            return i + 1;
-          }
-        }
-
-        if (position[key] >= rect[startProp] && position[key] <= rectEnd) {
-          return i;
-        }
-      }
-
-      return -1;
-    } else {
-      let closestIndex = -1;
-      let minDistance = Infinity;
-
-      rects.forEach((rect, index) => {
-        const centerX = rect.left + rect.width / 2;
-        const centerY = rect.top + rect.height / 2;
-
-        const distance = flexWrap
-          ? Math.sqrt(
-              Math.pow(position.x - centerX, 2) +
-                Math.pow(position.y - centerY, 2)
-            )
-          : horizontal
-          ? Math.abs(position.x - centerX)
-          : Math.abs(position.y - centerY);
-
-        if (distance < minDistance) {
-          minDistance = distance;
-          closestIndex = index;
-        }
-      });
-
-      return closestIndex;
-    }
-  };
-
-  // 드래그
   const itemDrag = (e: MouseEvent, index: number) => {
     e.preventDefault();
     const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
@@ -113,7 +113,6 @@ export const useDynamicList = <T>({
     onDragStart?.(list, index);
   };
 
-  // 드래그 후 이동
   const itemMove = (e: any) => {
     if (draggingItemIndex === null || !listRef.current) return;
 
@@ -123,51 +122,61 @@ export const useDynamicList = <T>({
     const children = Array.from(listRef.current.children) as HTMLElement[];
     const rects = children.map((child) => child.getBoundingClientRect());
 
-    const toIndex = findClosestIndex({ x: e.clientX, y: e.clientY }, rects);
+    const filteredRects =
+      staticMove || draggingItemIndex === -1
+        ? rects
+        : rects.filter((_, index) => index !== draggingItemIndex);
+
+    const toIndex = findClosestIndex({
+      position: newPosition,
+      rects: filteredRects,
+      horizontal,
+      flexWrap,
+    });
 
     if (toIndex === -1 || toIndex === null) {
       return;
+    }
+
+    let originalToIndex = toIndex;
+    if (toIndex >= draggingItemIndex) {
+      originalToIndex = toIndex + 1;
     }
 
     if (staticMove) {
       setDropTargetIndex(toIndex);
     } else {
       const fromIndex = list.findIndex((item) => item === draggingItemData);
-      if (fromIndex !== -1 && toIndex !== fromIndex) {
+      if (fromIndex !== -1 && originalToIndex !== fromIndex) {
         const updated = [...list];
         const [moved] = updated.splice(fromIndex, 1);
-        updated.splice(toIndex, 0, moved);
+        updated.splice(originalToIndex, 0, moved);
         setList(updated);
       }
     }
-
     onDragMove?.(list, draggingItemIndex);
   };
 
-  // 드롭
   const itemDrop = () => {
     if (draggingItemIndex === null) return;
 
+    let finalIndex = -1;
     if (staticMove) {
       if (dropTargetIndex !== null && dropTargetIndex !== draggingItemIndex) {
         const updatedList = [...initialListRef.current];
         const [movedItem] = updatedList.splice(draggingItemIndex, 1);
-
-        const finalDropIndex =
-          dropTargetIndex > draggingItemIndex
-            ? dropTargetIndex - 1
-            : dropTargetIndex;
-
-        updatedList.splice(finalDropIndex, 0, movedItem);
+        updatedList.splice(dropTargetIndex, 0, movedItem);
         setList(updatedList);
-        onDragEnd?.(updatedList, draggingItemIndex);
+        finalIndex = dropTargetIndex;
       } else {
-        onDragEnd?.(initialListRef.current, draggingItemIndex);
+        setList(initialListRef.current);
+        finalIndex = draggingItemIndex;
       }
     } else {
-      const finalIndex = list.findIndex((item) => item === draggingItemData);
-      onDragEnd?.(list, finalIndex);
+      finalIndex = list.findIndex((item) => item === draggingItemData);
     }
+
+    onDragEnd?.(list, finalIndex);
 
     setDraggingItemIndex(null);
     setDraggingItemData(null);
@@ -178,9 +187,7 @@ export const useDynamicList = <T>({
   useEffect(() => {
     if (draggingItemData) {
       window.addEventListener("mousemove", itemMove);
-      window.addEventListener("mouseup", itemDrop, {
-        once: true,
-      });
+      window.addEventListener("mouseup", itemDrop);
     }
 
     return () => {
