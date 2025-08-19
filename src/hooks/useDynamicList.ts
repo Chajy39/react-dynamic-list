@@ -84,7 +84,6 @@ export const useDynamicList = <T>({
 }: useDynamicListProps<T>) => {
   const [list, setList] = useState(initialData);
   const [position, setPosition] = useState<PositionType | null>(null);
-  const [dragOffset, setDragOffset] = useState<PositionType>({ x: 0, y: 0 });
   const [draggingItemIndex, setDraggingItemIndex] = useState<number | null>(
     null
   );
@@ -98,10 +97,6 @@ export const useDynamicList = <T>({
   const itemDrag = (e: MouseEvent, index: number) => {
     e.preventDefault();
     const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
-    setDragOffset({
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top,
-    });
     setDraggingItemIndex(index);
     setDraggingItemData(list[index]);
     setDragItemSize({ width: rect.width, height: rect.height });
@@ -154,6 +149,7 @@ export const useDynamicList = <T>({
         setList(updated);
       }
     }
+
     onDragMove?.(list, draggingItemIndex);
   };
 
@@ -202,7 +198,6 @@ export const useDynamicList = <T>({
     draggingItem: draggingItemIndex,
     draggingItemData,
     position,
-    dragOffset,
     dragItemSize,
     dropTargetIndex: staticMove ? dropTargetIndex : null,
     itemDrag,

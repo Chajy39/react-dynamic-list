@@ -69,7 +69,7 @@ function App() {
         getKey={(item) => item.title}
         type={"grid"}
         cols={4}
-        staticMove
+        // staticMove
         onDragEnd={(item) => setList(item)}
         containerStyle={{ width: "70%", gap: "3vw" }}
       />
