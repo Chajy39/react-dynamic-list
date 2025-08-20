@@ -1,5 +1,5 @@
 import { MouseEvent, useEffect, useRef, useState } from "react";
-import { useDynamicListProps } from "../components/List/types";
+import { useDynamicListProps } from "../types/types";
 
 type PositionType = { x: number; y: number };
 
@@ -78,6 +78,7 @@ export const useDynamicList = <T>({
   horizontal,
   flexWrap,
   staticMove = false,
+  draggable,
   onDragStart,
   onDragMove,
   onDragEnd,
@@ -95,17 +96,19 @@ export const useDynamicList = <T>({
   const listRef = useRef<HTMLUListElement>(null);
 
   const itemDrag = (e: MouseEvent, index: number) => {
-    e.preventDefault();
-    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
-    setDraggingItemIndex(index);
-    setDraggingItemData(list[index]);
-    setDragItemSize({ width: rect.width, height: rect.height });
-    setPosition({
-      x: e.clientX,
-      y: e.clientY,
-    });
-    initialListRef.current = list;
-    onDragStart?.(list, index);
+    if (draggable === false) {
+      e.preventDefault();
+      const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+      setDraggingItemIndex(index);
+      setDraggingItemData(list[index]);
+      setDragItemSize({ width: rect.width, height: rect.height });
+      setPosition({
+        x: e.clientX,
+        y: e.clientY,
+      });
+      initialListRef.current = list;
+      onDragStart?.(list, index);
+    }
   };
 
   const itemMove = (e: any) => {
@@ -181,16 +184,23 @@ export const useDynamicList = <T>({
   };
 
   useEffect(() => {
-    if (draggingItemData) {
+    if (draggingItemData && draggable === false) {
       window.addEventListener("mousemove", itemMove);
       window.addEventListener("mouseup", itemDrop);
-    }
 
-    return () => {
-      window.removeEventListener("mousemove", itemMove);
-      window.removeEventListener("mouseup", itemDrop);
-    };
-  }, [draggingItemIndex, draggingItemData, dropTargetIndex, list, staticMove]);
+      return () => {
+        window.removeEventListener("mousemove", itemMove);
+        window.removeEventListener("mouseup", itemDrop);
+      };
+    }
+  }, [
+    draggingItemIndex,
+    draggingItemData,
+    dropTargetIndex,
+    list,
+    staticMove,
+    draggable,
+  ]);
 
   return {
     list,

@@ -1,5 +1,5 @@
 import "./App.css";
-import { DynamicList } from "../../src/";
+import { DynamicList, GridList } from "../../src/";
 import { useState } from "react";
 
 const items = [
@@ -63,13 +63,13 @@ function App() {
 
   return (
     <div style={{ width: "70vw", height: "100vh" }}>
-      <DynamicList
+      <GridList
         items={list}
         renderItem={(item) => <ListItem item={item} />}
         getKey={(item) => item.title}
-        type={"grid"}
-        cols={4}
-        // staticMove
+        cols={3}
+        // draggable
+        staticMove
         onDragEnd={(item) => setList(item)}
         containerStyle={{ width: "70%", gap: "3vw" }}
       />

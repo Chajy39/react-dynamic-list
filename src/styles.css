@@ -1,4 +1,4 @@
-.dynamic-list-container {
+/* .dynamic-list-container {
   position: relative;
   display: flex;
   list-style: none;
@@ -24,4 +24,4 @@
 
 .not-grabbed {
   transition: transform 0.2s ease;
-}
+} */
