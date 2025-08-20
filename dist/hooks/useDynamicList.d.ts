@@ -1,10 +1,10 @@
 import { MouseEvent } from 'react';
-import { useDynamicListProps } from '../components/List/types';
+import { useDynamicListProps } from '../types/types';
 type PositionType = {
     x: number;
     y: number;
 };
-export declare const useDynamicList: <T>({ initialData, horizontal, flexWrap, staticMove, onDragStart, onDragMove, onDragEnd, }: useDynamicListProps<T>) => {
+export declare const useDynamicList: <T>({ initialData, horizontal, flexWrap, staticMove, draggable, onDragStart, onDragMove, onDragEnd, }: useDynamicListProps<T>) => {
     list: T[];
     listRef: import('react').RefObject<HTMLUListElement | null>;
     draggingItem: number | null;
