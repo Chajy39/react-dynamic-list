@@ -1,0 +1,1 @@
+.dynamic-list-container{position:relative;display:flex;list-style:none;padding:0;margin:0}.dynamic-list-item{width:fit-content;word-break:break-all;cursor:grab}.grabbed{position:fixed;pointer-events:none;background:#fff;box-shadow:0 2px 8px #0000001a;z-index:1000;transform:scale(1.05);transition:transform .1s ease}.not-grabbed{transition:transform .2s ease}
